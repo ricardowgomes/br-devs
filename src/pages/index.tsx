@@ -1,9 +1,10 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import { Inter } from 'next/font/google'
 
 import Loader from '@app/shared/Loader'
 import styles from '@app/styles/Home.module.css'
+
+import toast from 'react-hot-toast';
 
 export default function Home() {
   return (
@@ -16,6 +17,9 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <Loader show />
+        <button onClick={() => toast.success('Toma')}>
+          Toast Me
+        </button>
       </main>
     </>
   )

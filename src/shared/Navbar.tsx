@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image'
 
 const Navbar = () => {
   const user = null;
@@ -23,7 +24,7 @@ const Navbar = () => {
             </li>
             <li>
               <Link href={`/${username}`}>
-                <img src={user?.photoURL} />
+              <Image src={user?.photoURL} alt="avatar" />
               </Link>
             </li>
           </>

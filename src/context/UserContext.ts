@@ -1,11 +1,11 @@
 import { createContext } from 'react';
 
 interface UserContextType {
-  user: null;
-  username: null;
+  user: string | null;
+  username: string | null;
 }
 
-const UserContext: Context<UserContextType> = createContext<UserContextType>({
+const UserContext = createContext<UserContextType>({
   user: null, username: null
 });
 

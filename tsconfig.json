@@ -18,6 +18,6 @@
       "@app/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/lib/firebase.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/lib/firebase.js", "src/pages/enter/new.jsx", "src/pages/enter/index.jsx"],
   "exclude": ["node_modules"]
 }

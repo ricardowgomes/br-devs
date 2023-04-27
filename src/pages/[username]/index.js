@@ -1,26 +1,24 @@
 import { getUserWithUsername, postToJSON } from '@app/lib/firebase';
 import UserProfile from '@app/shared/UserProfile';
+import Metatags from '@app/shared/Metatags';
 import PostFeed from '@app/shared/PostFeed';
-import { Post, User } from '@app/types';
 
-// The param for getServerSideProps is actually the path query
-type Query = {
-  query: { username: string }
-}
-export async function getServerSideProps({ query }: Query) {
+
+export async function getServerSideProps({ query }) {
   const { username } = query;
 
   const userDoc = await getUserWithUsername(username);
 
-  // JSON serializable data
-  let user = null;
-  let posts = null;
-
+  // If no user, short circuit to 404 page
   if (!userDoc) {
     return {
       notFound: true,
     };
   }
+
+  // JSON serializable data
+  let user = null;
+  let posts = null;
 
   if (userDoc) {
     user = userDoc.data();
@@ -37,12 +35,12 @@ export async function getServerSideProps({ query }: Query) {
   };
 }
 
-
-const UserProfilePage = ({ user, posts }: { user: User, posts: Array<Post> }) => (
-  <main>
-    <UserProfile user={user} />
-    <PostFeed posts={posts} />
-  </main>
-)
-
-export default UserProfilePage;
+export default function UserProfilePage({ user, posts }) {
+  return (
+    <main>
+      <Metatags title={user.username} description={`${user.username}'s public profile`} />
+      <UserProfile user={user} />
+      <PostFeed posts={posts} />
+    </main>
+  );
+}

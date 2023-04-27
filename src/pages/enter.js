@@ -1,13 +1,11 @@
 import { auth, firestore, googleAuthProvider } from '@app/lib/firebase';
 import UserContext from '@app/context/UserContext';
-import Head from 'next/head'
-import Image from 'next/image';
-import toast from 'react-hot-toast';
+import Metatags from '@app/shared/Metatags';
 
 import { useEffect, useState, useCallback, useContext } from 'react';
 import debounce from 'lodash.debounce';
 
-const Enter = () => {
+export default function Enter(props) {
   const { user, username } = useContext(UserContext);
 
   // 1. user signed out <SignInButton />
@@ -15,48 +13,44 @@ const Enter = () => {
   // 3. user signed in, has username <SignOutButton />
   return (
     <main>
-      <Head>
-        <title>Enter</title>
-        <meta property="og:title" content="Enter" key="title" />
-        <meta property="og:description" content="Sign up for this amazing app!" key="title" />
-      </Head>
+      <Metatags title="Enter" description="Sign up for this amazing app!" />
       {user ? !username ? <UsernameForm /> : <SignOutButton /> : <SignInButton />}
     </main>
   );
 }
 
 // Sign in with Google button
-const SignInButton = () => {
+function SignInButton() {
   const signInWithGoogle = async () => {
-    try {
-      await auth.signInWithPopup(googleAuthProvider)
-    } catch (error) {
-      toast.error(`${error}`)
-    }
-  }
+    await auth.signInWithPopup(googleAuthProvider);
+  };
 
   return (
-    <button className="btn-google" onClick={signInWithGoogle}>
-      <Image src="/google.svg" alt="Google Logo" width={20} height={20} />
-      Sign in with Google
-    </button>
-  )
-};
+    <>
+      <button className="btn-google" onClick={signInWithGoogle}>
+        <img src={'/google.png'} width="30px" /> Sign in with Google
+      </button>
+      <button onClick={() => auth.signInAnonymously()}>
+        Sign in Anonymously
+      </button>
+    </>
+  );
+}
 
 // Sign out button
-const SignOutButton = () => {
+function SignOutButton() {
   return <button onClick={() => auth.signOut()}>Sign Out</button>;
 }
 
 // Username form
-const UsernameForm = () => {
+function UsernameForm() {
   const [formValue, setFormValue] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { user, username } = useContext(UserContext);
 
-  const onSubmit = async (e: Event) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     // Create refs for both documents
@@ -71,7 +65,7 @@ const UsernameForm = () => {
     await batch.commit();
   };
 
-  const onChange = (e: Event): void => {
+  const onChange = (e) => {
     // Force form value typed in form to match correct format
     const val = e.target.value.toLowerCase();
     const re = /^(?=[a-zA-Z0-9._]{3,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
@@ -136,7 +130,7 @@ const UsernameForm = () => {
   );
 }
 
-const UsernameMessage = ({ username, isValid, loading }) => {
+function UsernameMessage({ username, isValid, loading }) {
   if (loading) {
     return <p>Checking...</p>;
   } else if (isValid) {
@@ -147,5 +141,3 @@ const UsernameMessage = ({ username, isValid, loading }) => {
     return <p></p>;
   }
 }
-
-export default Enter;

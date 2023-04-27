@@ -1,17 +1,26 @@
 import Link from 'next/link';
-import Image from 'next/image'
+import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import UserContext from '@app/context/UserContext';
+import { auth } from '@app/lib/firebase';
 
-const Navbar = () => {
+// Top navbar
+export default function Navbar() {
   const { user, username } = useContext(UserContext);
+
+  const router = useRouter();
+
+  const signOut =  () => {
+    auth.signOut();
+    router.reload();
+  }
 
   return (
     <nav className="navbar">
       <ul>
         <li>
           <Link href="/">
-            <button className="btn-logo">FEED</button>
+            <button className="btn-logo">NXT</button>
           </Link>
         </li>
 
@@ -19,13 +28,16 @@ const Navbar = () => {
         {username && (
           <>
             <li className="push-left">
+              <button onClick={signOut}>Sign Out</button>
+            </li>
+            <li>
               <Link href="/admin">
                 <button className="btn-blue">Write Posts</button>
               </Link>
             </li>
             <li>
               <Link href={`/${username}`}>
-              <img src={user?.photoURL} alt="avatar" />
+                <img src={user?.photoURL || '/hacker.png'} />
               </Link>
             </li>
           </>
@@ -43,5 +55,3 @@ const Navbar = () => {
     </nav>
   );
 }
-
-export default Navbar;

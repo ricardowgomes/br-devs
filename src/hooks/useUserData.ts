@@ -1,9 +1,9 @@
-import { auth, firestore } from '../lib/firebase';
+import { auth, firestore } from '@app/lib/firebase';
 import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 // Custom hook to read  auth record and user profile doc
- const useUserData = () => {
+export default function useUserData() {
   const [user] = useAuthState(auth);
   const [username, setUsername] = useState(null);
 
@@ -25,5 +25,3 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 
   return { user, username };
 }
-
-export default useUserData;

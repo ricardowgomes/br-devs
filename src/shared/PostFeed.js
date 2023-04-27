@@ -1,35 +1,35 @@
-import Link from "next/link";
-import { Post } from '@app/types';
+import Link from 'next/link';
 
-const PostItem = ({ post, isAdmin = false }: { post: Post, isAdmin: boolean }) => {
+export default function PostFeed({ posts, admin }) {
+  return posts ? posts.map((post) => <PostItem post={post} key={post.slug} admin={admin} />) : null;
+}
+
+function PostItem({ post, admin = false }) {
+  // Naive method to calc word count and read time
   const wordCount = post?.content.trim().split(/\s+/g).length;
   const minutesToRead = (wordCount / 100 + 1).toFixed(0);
 
   return (
     <div className="card">
       <Link href={`/${post.username}`}>
-        <a>
           <strong>By @{post.username}</strong>
-        </a>
       </Link>
-
-      <video src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"/>
 
       <Link href={`/${post.username}/${post.slug}`}>
         <h2>
-          <a>{post.title}</a>
+          {post.title}
         </h2>
       </Link>
 
       <footer>
         <span>
-          {wordCount} words {minutesToRead} min read
+          {wordCount} words. {minutesToRead} min read
         </span>
         <span className="push-left">💗 {post.heartCount || 0} Hearts</span>
       </footer>
 
       {/* If admin view, show extra controls for user */}
-      {isAdmin && (
+      {admin && (
         <>
           <Link href={`/admin/${post.slug}`}>
             <h3>
@@ -41,13 +41,5 @@ const PostItem = ({ post, isAdmin = false }: { post: Post, isAdmin: boolean }) =
         </>
       )}
     </div>
-  )
+  );
 }
-
-const PostFeed = ({ posts }: { posts: Array<Post>}) => (
-  <>
-    {posts && posts.map((post) => <PostItem key={post.slug} post={post} isAdmin={false} />)}
-  </>
-)
-
-export default PostFeed;

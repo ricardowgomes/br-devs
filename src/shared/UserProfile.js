@@ -1,6 +1,5 @@
-import { User } from '@app/types'
-
-export default function UserProfile({ user }: { user: User}) {
+// UI component for user profile
+export default function UserProfile({ user }) {
   return (
     <div className="box-center">
       <img src={user.photoURL || '/hacker.png'} className="card-img-center" />

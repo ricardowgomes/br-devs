@@ -1,14 +1,16 @@
+import styles from '@app/styles/Post.module.css';
 import PostContent from '@app/shared/PostContent';
-import { firestore, getUserWithUsername, postToJSON } from '@app/lib/firebase';
-import { useDocumentData } from 'react-firebase-hooks/firestore';
-import { Post as PostType } from '@app/types';
+import HeartButton from '@app/shared/HeartButton';
+import AuthCheck from '@app/shared/AuthCheck';
+import Metatags from '@app/shared/Metatags';
+import UserContext from '@app/context/UserContext';
+import { firestore, getUserWithUsername, postToJSON } from '../../lib/firebase';
 
-type Params = {
-  params: {
-    username: string, slug: string
-  }
-}
-export async function getStaticProps({ params }: Params) {
+import Link from 'next/link';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
+import { useContext } from 'react';
+
+export async function getStaticProps({ params }) {
   const { username, slug } = params;
   const userDoc = await getUserWithUsername(username);
 
@@ -24,7 +26,7 @@ export async function getStaticProps({ params }: Params) {
 
   return {
     props: { post, path },
-    revalidate: 5000,
+    revalidate: 100,
   };
 }
 
@@ -49,15 +51,17 @@ export async function getStaticPaths() {
   };
 }
 
-export default function Post(props: { path: string, post: PostType }) {
-  const postRef: any = firestore.doc(props.path);
+export default function Post(props) {
+  const postRef = firestore.doc(props.path);
   const [realtimePost] = useDocumentData(postRef);
 
   const post = realtimePost || props.post;
 
+  const { user: currentUser } = useContext(UserContext);
 
   return (
-    <main className='container'>
+    <main className={styles.container}>
+      <Metatags title={post.title} description={post.title} />
 
       <section>
         <PostContent post={post} />
@@ -67,8 +71,23 @@ export default function Post(props: { path: string, post: PostType }) {
         <p>
           <strong>{post.heartCount || 0} 🤍</strong>
         </p>
-      </aside>
 
+        <AuthCheck
+          fallback={
+            <Link href="/enter">
+              <button>💗 Sign Up</button>
+            </Link>
+          }
+        >
+          <HeartButton postRef={postRef} />
+        </AuthCheck>
+
+        {currentUser?.uid === post.uid && (
+          <Link href={`/admin/${post.slug}`}>
+            <button className="btn-blue">Edit Post</button>
+          </Link>
+        )}
+      </aside>
     </main>
   );
 }

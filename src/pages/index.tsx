@@ -3,7 +3,7 @@ import Loader from '@app/shared/Loader'
 import PostFeed from '@app/shared/PostFeed'
 
 import { firestore, fromMillis, postToJSON } from '@app/lib/firebase';
-import { Post } from '@app/types/post';
+import { Post } from '@app/types';
 
 // Max post to query per page
 const LIMIT = 1;

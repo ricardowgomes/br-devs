@@ -1,8 +1,7 @@
 import { getUserWithUsername, postToJSON } from '@app/lib/firebase';
 import UserProfile from '@app/shared/UserProfile';
 import PostFeed from '@app/shared/PostFeed';
-import { Post } from '@app/types/post';
-import { User } from '@app/types/user';
+import { Post, User } from '@app/types';
 
 // The param for getServerSideProps is actually the path query
 type Query = {
@@ -16,6 +15,12 @@ export async function getServerSideProps({ query }: Query) {
   // JSON serializable data
   let user = null;
   let posts = null;
+
+  if (!userDoc) {
+    return {
+      notFound: true,
+    };
+  }
 
   if (userDoc) {
     user = userDoc.data();

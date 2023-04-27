@@ -1,7 +1,7 @@
-import styles from '../../styles/Post.module.css';
 import PostContent from '@app/shared/PostContent';
 import { firestore, getUserWithUsername, postToJSON } from '@app/lib/firebase';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
+import { Post as PostType } from '@app/types';
 
 type Params = {
   params: {
@@ -49,10 +49,25 @@ export async function getStaticPaths() {
   };
 }
 
-export default function Post(props) {
+export default function Post(props: { path: string, post: PostType }) {
+  const postRef: any = firestore.doc(props.path);
+  const [realtimePost] = useDocumentData(postRef);
+
+  const post = realtimePost || props.post;
+
 
   return (
-    <main className={styles.container}>
+    <main className='container'>
+
+      <section>
+        <PostContent post={post} />
+      </section>
+
+      <aside className="card">
+        <p>
+          <strong>{post.heartCount || 0} 🤍</strong>
+        </p>
+      </aside>
 
     </main>
   );

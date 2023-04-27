@@ -1,4 +1,4 @@
-import { User } from '@app/types/user'
+import { User } from '@app/types'
 
 export default function UserProfile({ user }: { user: User}) {
   return (

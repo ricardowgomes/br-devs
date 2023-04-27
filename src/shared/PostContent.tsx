@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
+import { Post } from '@app/types'
 
 // UI component for main post content
-export default function PostContent({ post }) {
+export default function PostContent({ post }: { post: Post }) {
   const createdAt = typeof post?.createdAt === 'number' ? new Date(post.createdAt) : post.createdAt.toDate();
 
   return (

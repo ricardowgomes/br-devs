@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Post } from '@app/types/post';
+import { Post } from '@app/types';
 
 const PostItem = ({ post, isAdmin = false }: { post: Post, isAdmin: boolean }) => {
   const wordCount = post?.content.trim().split(/\s+/g).length;

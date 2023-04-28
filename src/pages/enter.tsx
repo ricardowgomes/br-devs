@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { auth, firestore, googleAuthProvider } from '@app/lib/firebase';
 import UserContext from '@app/context/UserContext';
 import Metatags from '@app/shared/Metatags';
@@ -5,7 +6,7 @@ import Metatags from '@app/shared/Metatags';
 import { useEffect, useState, useCallback, useContext } from 'react';
 import debounce from 'lodash.debounce';
 
-export default function Enter(props) {
+export default function Enter() {
   const { user, username } = useContext(UserContext);
 
   // 1. user signed out <SignInButton />
@@ -28,7 +29,8 @@ function SignInButton() {
   return (
     <>
       <button className="btn-google" onClick={signInWithGoogle}>
-        <img src={'/google.png'} width="30px" /> Sign in with Google
+        <Image src={'/google.png'} width={30} height={30} alt="Google logo" />
+        Sign in with Google
       </button>
       <button onClick={() => auth.signInAnonymously()}>
         Sign in Anonymously
@@ -50,7 +52,7 @@ function UsernameForm() {
 
   const { user, username } = useContext(UserContext);
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     // Create refs for both documents
@@ -65,7 +67,7 @@ function UsernameForm() {
     await batch.commit();
   };
 
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Force form value typed in form to match correct format
     const val = e.target.value.toLowerCase();
     const re = /^(?=[a-zA-Z0-9._]{3,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
@@ -83,8 +85,6 @@ function UsernameForm() {
       setIsValid(false);
     }
   };
-
-  //
 
   useEffect(() => {
     checkUsername(formValue);
@@ -106,11 +106,11 @@ function UsernameForm() {
   );
 
   return (
-    !username && (
+    !username ? (
       <section>
         <h3>Choose Username</h3>
         <form onSubmit={onSubmit}>
-          <input name="username" placeholder="myname" value={formValue} onChange={onChange} />
+          <input name="username" placeholder="my name" value={formValue} onChange={onChange} />
           <UsernameMessage username={formValue} isValid={isValid} loading={loading} />
           <button type="submit" className="btn-green" disabled={!isValid}>
             Choose
@@ -126,11 +126,16 @@ function UsernameForm() {
           </div>
         </form>
       </section>
-    )
+    ) : null
   );
 }
 
-function UsernameMessage({ username, isValid, loading }) {
+type UsernameMessage = {
+  username: string, isValid: boolean, loading: boolean
+}
+
+function UsernameMessage({
+  username, isValid, loading }: UsernameMessage) {
   if (loading) {
     return <p>Checking...</p>;
   } else if (isValid) {

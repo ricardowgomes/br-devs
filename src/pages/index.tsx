@@ -4,26 +4,27 @@ import Loader from '@app/shared/Loader';
 import { firestore, fromMillis, postToJSON } from '@app/lib/firebase';
 
 import { useState } from 'react';
+import { Post } from '@app/types';
 
 // Max post to query per page
 const LIMIT = 10;
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
   const postsQuery = firestore
     .collectionGroup('posts')
     .where('published', '==', true)
     .orderBy('createdAt', 'desc')
     .limit(LIMIT);
 
-  const posts = (await postsQuery.get()).docs.map(postToJSON);
+  const initialPosts = (await postsQuery.get()).docs.map(postToJSON);
 
   return {
-    props: { posts }, // will be passed to the page component as props
+    props: { initialPosts }, // will be passed to the page component as props
   };
 }
 
-export default function Home(props) {
-  const [posts, setPosts] = useState(props.posts);
+export default function Home({ initialPosts }: { initialPosts: [Post] }) {
+  const [posts, setPosts] = useState<[Post] | any>(initialPosts);
   const [loading, setLoading] = useState(false);
 
   const [postsEnd, setPostsEnd] = useState(false);
@@ -44,7 +45,8 @@ export default function Home(props) {
 
     const newPosts = (await query.get()).docs.map((doc) => doc.data());
 
-    setPosts(posts.concat(newPosts));
+    setPosts((prev: [Post]) => [...prev, ...newPosts]);
+
     setLoading(false);
 
     if (newPosts.length < LIMIT) {
@@ -62,7 +64,7 @@ export default function Home(props) {
         <p>Sign up for an 👨‍🎤 account, ✍️ write posts, then 💞 heart content created by other users. All public content is server-rendered and search-engine optimized.</p>
       </div>
 
-      <PostFeed posts={posts} />
+      <PostFeed posts={posts} admin={false} />
 
       {!loading && !postsEnd && <button onClick={getMorePosts}>Load more</button>}
 

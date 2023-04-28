@@ -8,6 +8,11 @@ interface Post {
   createdAt: number,
 }
 
+type PostProp = {
+  post: Post,
+  admin?: boolean
+}
+
 export type {
-  Post
+  Post, PostProp
 }

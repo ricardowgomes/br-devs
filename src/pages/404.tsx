@@ -10,7 +10,7 @@ export default function Custom404() {
         height="362"
         frameBorder="0"
         allowFullScreen
-      ></iframe>
+      />
       <Link href="/">
         <button className="btn-blue">Go home</button>
       </Link>

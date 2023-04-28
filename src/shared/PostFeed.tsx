@@ -1,10 +1,19 @@
 import Link from 'next/link';
+import type { Post, PostProp } from '@app/types';
 
-export default function PostFeed({ posts, admin }) {
-  return posts ? posts.map((post) => <PostItem post={post} key={post.slug} admin={admin} />) : null;
+export default function PostFeed({ posts, admin }: { posts: [Post], admin: boolean }) {
+  return (
+    <>
+      {
+        posts
+          ? posts.map((post) => <PostItem post={post} key={post.slug} admin={admin} />)
+          : null
+      }
+    </>
+    );
 }
 
-function PostItem({ post, admin = false }) {
+function PostItem({ post, admin = false }: PostProp) {
   // Naive method to calc word count and read time
   const wordCount = post?.content.trim().split(/\s+/g).length;
   const minutesToRead = (wordCount / 100 + 1).toFixed(0);

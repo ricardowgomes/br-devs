@@ -9,13 +9,13 @@ export default function ImageUploader() {
   const [downloadURL, setDownloadURL] = useState(null);
 
   // Creates a Firebase Upload Task
-  const uploadFile = async (e) => {
+  const uploadFile = async (files: FileList) => {
     // Get the file
-    const file = Array.from(e.target.files)[0];
+    const file = Array.from(files)[0];
     const extension = file.type.split('/')[1];
 
     // Makes reference to the storage bucket location
-    const ref = storage.ref(`uploads/${auth.currentUser.uid}/${Date.now()}.${extension}`);
+    const ref = storage.ref(`uploads/${auth.currentUser?.uid}/${Date.now()}.${extension}`);
     setUploading(true);
 
     // Starts the upload
@@ -23,7 +23,8 @@ export default function ImageUploader() {
 
     // Listen to updates to upload task
     task.on(STATE_CHANGED, (snapshot) => {
-      const pct = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0);
+      // + bellow turn into a number
+      const pct = +((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0);
       setProgress(pct);
     });
 
@@ -45,7 +46,7 @@ export default function ImageUploader() {
         <>
           <label className="btn">
             📸 Upload Img
-            <input type="file" onChange={uploadFile} accept="image/x-png,image/gif,image/jpeg" />
+            <input type="file" onChange={(e: any) => uploadFile(e.target.files)} accept="image/x-png,image/gif,image/jpeg" />
           </label>
         </>
       )}

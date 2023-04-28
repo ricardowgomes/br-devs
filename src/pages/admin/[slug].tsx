@@ -12,7 +12,7 @@ import ReactMarkdown from 'react-markdown';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
-export default function AdminPostEdit(props) {
+export default function AdminPostEdit() {
   return (
     <AuthCheck>
       <PostManager />
@@ -26,7 +26,7 @@ function PostManager() {
   const router = useRouter();
   const { slug } = router.query;
 
-  const postRef = firestore.collection('users').doc(auth.currentUser.uid).collection('posts').doc(slug);
+  const postRef = firestore.collection('users').doc(auth.currentUser?.uid).collection('posts').doc(slug);
   const [post] = useDocumentDataOnce(postRef);
 
   return (
@@ -54,12 +54,12 @@ function PostManager() {
   );
 }
 
-function PostForm({ defaultValues, postRef, preview }) {
+function PostForm({ defaultValues, postRef, preview }: any) {
   const { register, errors, handleSubmit, formState, reset, watch } = useForm({ defaultValues, mode: 'onChange' });
 
   const { isValid, isDirty } = formState;
 
-  const updatePost = async ({ content, published }) => {
+  const updatePost = async ({ content, published }: { content: string, published: boolean }) => {
     await postRef.update({
       content,
       published,
@@ -106,7 +106,7 @@ function PostForm({ defaultValues, postRef, preview }) {
   );
 }
 
-function DeletePostButton({ postRef }) {
+function DeletePostButton({ postRef }: any) {
   const router = useRouter();
 
   const deletePost = async () => {

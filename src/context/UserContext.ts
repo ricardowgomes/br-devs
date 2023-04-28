@@ -1,7 +1,8 @@
 import { createContext } from 'react';
+import type { User } from '@app/types'
 
 interface UserContextType {
-  user: string | null;
+  user: User | null | any;
   username: string | null;
 }
 

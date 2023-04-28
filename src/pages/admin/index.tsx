@@ -11,7 +11,7 @@ import { useCollection } from 'react-firebase-hooks/firestore';
 import kebabCase from 'lodash.kebabcase';
 import toast from 'react-hot-toast';
 
-export default function AdminPostsPage(props) {
+export default function AdminPostsPage() {
   return (
     <main>
       <AuthCheck>
@@ -23,11 +23,11 @@ export default function AdminPostsPage(props) {
 }
 
 function PostList() {
-  const ref = firestore.collection('users').doc(auth.currentUser.uid).collection('posts');
+  const ref = firestore.collection('users').doc(auth.currentUser?.uid).collection('posts');
   const query = ref.orderBy('createdAt');
   const [querySnapshot] = useCollection(query);
 
-  const posts = querySnapshot?.docs.map((doc) => doc.data());
+  const posts: any = querySnapshot?.docs.map((doc) => doc.data());
 
   return (
     <>
@@ -49,9 +49,9 @@ function CreateNewPost() {
   const isValid = title.length > 3 && title.length < 100;
 
   // Create a new post in firestore
-  const createPost = async (e) => {
+  const createPost = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    const uid = auth.currentUser.uid;
+    const uid = auth.currentUser?.uid;
     const ref = firestore.collection('users').doc(uid).collection('posts').doc(slug);
 
     // Tip: give all fields a default value here

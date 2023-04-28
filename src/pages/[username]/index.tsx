@@ -2,9 +2,9 @@ import { getUserWithUsername, postToJSON } from '@app/lib/firebase';
 import UserProfile from '@app/shared/UserProfile';
 import Metatags from '@app/shared/Metatags';
 import PostFeed from '@app/shared/PostFeed';
+import { Post, User } from '@app/types';
 
-
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ query }: { query: { username: string }}) {
   const { username } = query;
 
   const userDoc = await getUserWithUsername(username);
@@ -35,12 +35,17 @@ export async function getServerSideProps({ query }) {
   };
 }
 
-export default function UserProfilePage({ user, posts }) {
+type UserProfilePageProps = {
+  user: User,
+  posts: [Post]
+}
+
+export default function UserProfilePage({ user, posts }: UserProfilePageProps) {
   return (
     <main>
       <Metatags title={user.username} description={`${user.username}'s public profile`} />
       <UserProfile user={user} />
-      <PostFeed posts={posts} />
+      <PostFeed posts={posts} admin={false} />
     </main>
   );
 }

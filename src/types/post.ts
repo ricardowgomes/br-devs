@@ -5,7 +5,9 @@ interface Post {
   slug: string,
   clapCount: number,
   published: boolean,
-  createdAt: number,
+  createdAt: number | {
+    toDate: Function
+  },
 }
 
 type PostProp = {

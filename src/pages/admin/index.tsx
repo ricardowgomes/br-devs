@@ -24,7 +24,7 @@ export default function AdminPostsPage() {
 
 function PostList() {
   const ref = firestore.collection('users').doc(auth.currentUser?.uid).collection('posts');
-  const query = ref.orderBy('createdAt');
+  const query: any = ref.orderBy('createdAt');
   const [querySnapshot] = useCollection(query);
 
   const posts: any = querySnapshot?.docs.map((doc) => doc.data());

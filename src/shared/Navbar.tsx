@@ -16,6 +16,8 @@ export default function Navbar() {
     router.reload();
   }
 
+  const imageSrc = user && user.photoURL || '/hacker.png'
+
   return (
     <nav className="navbar">
       <ul>
@@ -39,8 +41,10 @@ export default function Navbar() {
             <li>
               <Link href={`/${username}`}>
                 <Image
-                  src={user?.photoURL || '/hacker.png'}
+                  src={imageSrc}
                   alt={`${user.displayName}'s avatar`}
+                  width={40}
+                  height={40}
                   />
               </Link>
             </li>

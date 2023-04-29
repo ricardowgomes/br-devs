@@ -3,7 +3,7 @@ interface Post {
   username: string,
   title: string,
   slug: string,
-  heartCount: number,
+  clapCount: number,
   published: boolean,
   createdAt: number,
 }

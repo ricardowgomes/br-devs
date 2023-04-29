@@ -1,6 +1,6 @@
 import styles from '@app/styles/Post.module.css';
 import PostContent from '@app/shared/PostContent';
-import HeartButton from '@app/shared/HeartButton';
+import ClapButton from '@app/shared/ClapButton';
 import AuthCheck from '@app/shared/AuthCheck';
 import Metatags from '@app/shared/Metatags';
 import UserContext from '@app/context/UserContext';
@@ -71,17 +71,17 @@ export default function Post(props: any) {
 
       <aside className="card">
         <p>
-          <strong>{post.heartCount || 0} 🤍</strong>
+          <strong>{post.clapCount || 0} 👏</strong>
         </p>
 
         <AuthCheck
           fallback={
             <Link href="/enter">
-              <button>💗 Sign Up</button>
+              <button>👏 Sign Up</button>
             </Link>
           }
         >
-          <HeartButton postRef={postRef} />
+          <ClapButton postRef={postRef} />
         </AuthCheck>
 
         {currentUser?.uid === post.uid && (

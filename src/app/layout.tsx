@@ -1,9 +1,6 @@
-"use client"
-
 import '@app/styles/globals.css';
+import UserProvider from '@app/context/UserProvider';
 import Navbar from '@app/shared/Navbar';
-import UserContext from '@app/context/UserContext';
-import useUserData from '@app/hooks/useUserData';
 import { Toaster } from 'react-hot-toast';
 
 export default function RootLayout({ 
@@ -11,16 +8,16 @@ export default function RootLayout({
 }: {
   children: React.ReactNode,
 }) {
-  const userData = useUserData();
-
   return (
     <html lang="en">
-      <body>
-        <UserContext.Provider value={userData}>
+      {/* prevent extensions from causing a server/client
+      mismatch by setting suppressHydrationWarning to true */}
+      <body suppressHydrationWarning={true}>
+        <UserProvider>
           <Navbar />
-          {children}
+            {children}
           <Toaster/>
-        </UserContext.Provider>
+        </UserProvider>
       </body>
     </html>
   );

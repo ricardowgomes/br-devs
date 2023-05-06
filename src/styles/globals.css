@@ -38,7 +38,9 @@ a {
   box-sizing: border-box;
 }
 
-img {max-width: 100%;}
+img {
+  max-width: 100%;
+}
 
 input { 
   display: inline-block; 
@@ -181,11 +183,9 @@ button.btn-logo {
 }
 
 .card-img-center {
-  width:20%;
-  display:block;
-  margin:auto;
+  display: block;
+  margin: auto;
   border-radius: 50%;
-  max-width: 150px;
 }
 
 .card-info {

@@ -1,24 +1,25 @@
+import { notFound } from "next/navigation"
 import { getUserWithUsername, postToJSON } from '@app/lib/firebase';
-import UserProfile from '@app/shared/UserProfile';
-import Metatags from '@app/shared/Metatags';
-import PostFeed from '@app/shared/PostFeed';
+import UserProfilePage from './user-profile-page';
 import { Post, User } from '@app/types';
 
-export async function getServerSideProps({ query }: { query: { username: string }}) {
-  const { username } = query;
+{/* <Metatags title={user.username} description={`${user.username}'s public profile`} />
 
+export const metadata: Metadata = {
+  title: 'BR Devs | Brazilian Developers in Canada',
+  description: 'BR Devs is a blog for Brazilians Developers to share their experiences and technical knowledge working in Canada',
+}; */}
+
+async function getUser(username: string) {
   const userDoc = await getUserWithUsername(username);
-
-  // If no user, short circuit to 404 page
-  if (!userDoc) {
-    return {
-      notFound: true,
-    };
-  }
 
   // JSON serializable data
   let user = null;
   let posts = null;
+
+  if (!userDoc) {
+    notFound();
+  }
 
   if (userDoc) {
     user = userDoc.data();
@@ -30,22 +31,11 @@ export async function getServerSideProps({ query }: { query: { username: string 
     posts = (await postsQuery.get()).docs.map(postToJSON);
   }
 
-  return {
-    props: { user, posts }, // will be passed to the page component as props
-  };
+  return { user, posts };
 }
 
-type UserProfilePageProps = {
-  user: User,
-  posts: [Post]
-}
-
-export default function UserProfilePage({ user, posts }: UserProfilePageProps) {
-  return (
-    <main>
-      <Metatags title={user.username} description={`${user.username}'s public profile`} />
-      <UserProfile user={user} />
-      <PostFeed posts={posts} admin={false} />
-    </main>
-  );
+export default async function Page({ params }: { params: { username: string }}) {
+  const { user, posts }: { user: User, posts: [Post] } = await getUser(params.username);
+  
+  return <UserProfilePage user={user} posts={posts} />
 }

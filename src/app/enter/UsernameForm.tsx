@@ -1,51 +1,13 @@
-import Image from 'next/image'
-import { auth, firestore, googleAuthProvider } from '@app/lib/firebase';
-import UserContext from '@app/context/UserContext';
-import Metatags from '@app/shared/Metatags';
+"use client";
 
 import { useEffect, useState, useCallback, useContext } from 'react';
+import { firestore } from '@app/lib/firebase';
 import debounce from 'lodash.debounce';
 
-export default function Enter() {
-  const { user, username } = useContext(UserContext);
+import UserContext from '@app/context/UserContext';
+import UsernameMessage from './UsernameMessage';
 
-  // 1. user signed out <SignInButton />
-  // 2. user signed in, but missing username <UsernameForm />
-  // 3. user signed in, has username <SignOutButton />
-  return (
-    <main>
-      <Metatags title="Enter" description="Sign up for this amazing app!" />
-      {user ? !username ? <UsernameForm /> : <SignOutButton /> : <SignInButton />}
-    </main>
-  );
-}
-
-// Sign in with Google button
-function SignInButton() {
-  const signInWithGoogle = async () => {
-    await auth.signInWithPopup(googleAuthProvider);
-  };
-
-  return (
-    <>
-      <button className="btn-google" onClick={signInWithGoogle}>
-        <Image src={'/google.png'} width={30} height={30} alt="Google logo" />
-        Sign in with Google
-      </button>
-      <button onClick={() => auth.signInAnonymously()}>
-        Sign in Anonymously
-      </button>
-    </>
-  );
-}
-
-// Sign out button
-function SignOutButton() {
-  return <button onClick={() => auth.signOut()}>Sign Out</button>;
-}
-
-// Username form
-function UsernameForm() {
+export default function UsernameForm() {
   const [formValue, setFormValue] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -128,21 +90,4 @@ function UsernameForm() {
       </section>
     ) : null
   );
-}
-
-type UsernameMessage = {
-  username: string, isValid: boolean, loading: boolean
-}
-
-function UsernameMessage({
-  username, isValid, loading }: UsernameMessage) {
-  if (loading) {
-    return <p>Checking...</p>;
-  } else if (isValid) {
-    return <p className="text-success">{username} is available!</p>;
-  } else if (username && !isValid) {
-    return <p className="text-danger">That username is taken!</p>;
-  } else {
-    return <p></p>;
-  }
 }

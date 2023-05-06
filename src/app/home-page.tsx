@@ -1,29 +1,13 @@
+'use client'
+
 import PostFeed from '@app/shared/PostFeed';
-import Metatags from '@app/shared/Metatags';
 import Loader from '@app/shared/Loader';
-import { firestore, fromMillis, postToJSON } from '@app/lib/firebase';
+import { firestore, fromMillis } from '@app/lib/firebase';
 
 import { useState } from 'react';
 import { Post } from '@app/types';
 
-// Max post to query per page
-const LIMIT = 10;
-
-export async function getServerSideProps() {
-  const postsQuery = firestore
-    .collectionGroup('posts')
-    .where('published', '==', true)
-    .orderBy('createdAt', 'desc')
-    .limit(LIMIT);
-
-  const initialPosts = (await postsQuery.get()).docs.map(postToJSON);
-
-  return {
-    props: { initialPosts }, // will be passed to the page component as props
-  };
-}
-
-export default function Home({ initialPosts }: { initialPosts: [Post] }) {
+export default function HomePage({ initialPosts }: { initialPosts: [Post] }) {
   const [posts, setPosts] = useState<[Post] | any>(initialPosts);
   const [loading, setLoading] = useState(false);
 
@@ -41,7 +25,7 @@ export default function Home({ initialPosts }: { initialPosts: [Post] }) {
       .where('published', '==', true)
       .orderBy('createdAt', 'desc')
       .startAfter(cursor)
-      .limit(LIMIT);
+      .limit(10);
 
     const newPosts = (await query.get()).docs.map((doc) => doc.data());
 
@@ -49,15 +33,13 @@ export default function Home({ initialPosts }: { initialPosts: [Post] }) {
 
     setLoading(false);
 
-    if (newPosts.length < LIMIT) {
+    if (newPosts.length < 10) {
       setPostsEnd(true);
     }
   };
 
   return (
     <main>
-      <Metatags title="Home Page" description="Get the latest posts on our site" />
-
       <div className="card card-info">
         <h2>💡 BR Devs | Brazilian Developers in Canada</h2>
         <p>Welcome! This app is built with Next.js and Firebase and is loosely inspired by Dev.to.</p>

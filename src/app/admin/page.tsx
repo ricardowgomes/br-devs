@@ -5,7 +5,7 @@ import UserContext from '@app/context/UserContext';
 import { firestore, auth, serverTimestamp } from '@app/lib/firebase';
 
 import { useContext, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 import { useCollection } from 'react-firebase-hooks/firestore';
 import kebabCase from 'lodash.kebabcase';

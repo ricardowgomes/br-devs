@@ -4,7 +4,7 @@ import { firestore, auth, serverTimestamp } from '@app/lib/firebase';
 import ImageUploader from '@app/shared/ImageUploader';
 
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname } from 'next/navigation';
 
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import { useForm } from 'react-hook-form';
@@ -22,9 +22,8 @@ export default function AdminPostEdit() {
 
 function PostManager() {
   const [preview, setPreview] = useState(false);
-
-  const router = useRouter();
-  const slug: any = router.query.slug;
+  const pathname = usePathname();
+  const slug: any = pathname?.slug;
 
   const postRef: any = firestore.collection('users').doc(auth.currentUser?.uid).collection('posts').doc(slug);
   const [post] = useDocumentDataOnce(postRef);

@@ -1,3 +1,5 @@
+"use client"
+
 import '@app/styles/globals.css';
 import Navbar from '@app/shared/Navbar';
 import UserContext from '@app/context/UserContext';

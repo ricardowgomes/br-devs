@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useContext } from 'react';
 import UserContext from '@app/context/UserContext';
 import { auth } from '@app/lib/firebase';
@@ -13,7 +13,7 @@ export default function Navbar() {
 
   const signOut =  () => {
     auth.signOut();
-    router.reload();
+    router.refresh();
   }
 
   const imageSrc = user && user.photoURL || '/hacker.png'
